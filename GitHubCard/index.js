@@ -5,13 +5,41 @@ import axios from 'axios';
     https://api.github.com/users/<your name>
 */
 
-axios.get("https://api.github.com/users/ChristopherHenao")
-    .then( response => {
-        cardCreator(response.data)
-    })
-    .catch( err => {
-        console.log(`error: ${err}`)
-    })
+function importData (array){
+  let urlArray = [];
+  array.forEach(login => {
+    urlArray.push(`https://api.github.com/users/${login}`)});
+  urlArray.forEach(link =>
+    axios.get(link)
+  .then( response => {
+      cardCreator(response.data)
+  }))
+}
+
+
+// Original answer for Step 1 below - I made a function (above) so that I wouldn't have to write the code to import things multiple times
+        // axios.get("https://api.github.com/users/ChristopherHenao")
+        // .then( response => {
+        //     cardCreator(response.data)
+        // })
+        // .catch( err => {
+        //     console.log(`error: ${err}`)
+        // })
+//
+
+
+// Stretch Goal Answer - since I didn't have any followers on Github, I did the task for the followers of a different account 
+axios.get("https://api.github.com/users/bigknell/followers")
+.then(obj => obj.data )
+
+.then(obj => 
+ obj.map(item => item.login))
+  
+.then(array =>
+  importData(array))
+
+.catch(err =>
+  console.log(`error: ${err}`))
 
 
 /*
@@ -49,15 +77,26 @@ const followersArray = [
   "bigknell"
 ];
 
-followersArray.forEach(function(item){
-  axios.get(`https://api.github.com/users/${item}`)
-    .then( response => {
-        cardCreator(response.data)
-    })
-    .catch( err => {
-        console.log(`error: ${err}`)
-    })
-})
+
+importData(followersArray)
+
+// Original answer to Step 5 - I was able to shorten it after making the function importData
+                  // followersArray.forEach(function(item){
+                  //   axios.get(`https://api.github.com/users/${item}`)
+                  //     .then( response => {
+                  //         cardCreator(response.data)
+                  //     })
+                  //     .catch( err => {
+                  //         console.log(`error: ${err}`)
+                  //     })
+                  // })
+//
+
+
+
+
+
+
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
